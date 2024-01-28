@@ -1,0 +1,15 @@
+To integrate gdb remotely, I did the following:
+
+1.  Download the Bochs with gdb sourcecode from sourceforge.
+2.  Unzipped the tar file and ran "sudo ./configure --enable-gdb-stub" in the unzipped directory.
+3.  Noticed that compilation and configuration failed, so I researched what header files I was missing and narrowed it down to
+    two packages, build-essential and xorg-dev.
+4.  After that I also added another flag --with-x11 to use the packages which I installed to get: "sudo ./configure --enable-gdb-stub --with-x11"
+5.  From there, I ran "sudo make" and "sudo make install" to finish configuring my environment.
+6.  Added "gdbstub: enabled=1, port=1234, text_base=0, data_base=0, bss_base=0" to the bochsrc.bxrc file.
+7.  Attempted to run the kernel and noticed that it was waiting for a connection to the port 1234 rather than automatically
+    listening to executing code with gdb, so I researched what I should do to communicate over that port in gdb and
+    found the command "target remote" which I used to target localhost on 1234 using "target remote localhost:1234" after
+    executing gdb.
+8.  When I ran the kernel in one terminal using "bochs -f bochsrc.bxrc" with gdb in the other, I was able to finally step through and continue through instructions
+    in the original terminal, implying gdb had been successfully integrated remotely with the Bochs simulation.
